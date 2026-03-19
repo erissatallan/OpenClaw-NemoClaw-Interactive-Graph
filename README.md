@@ -1,27 +1,27 @@
-# 🔥 ClawGraph: OpenClaw & NemoClaw Interactive Graph
+# ClawGraph: OpenClaw & NemoClaw Interactive Graph
 
-**AI-powered knowledge graph builder and RAG system for the OpenClaw/NemoClaw ecosystem**
+**AI-powered knowledge graph builder and RAG system for the OpenClaw and NemoClaw ecosystems**
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-ClawGraph automatically crawls open-source repositories, extracts entities and relationships into a knowledge graph, and serves grounded answers via RAG — all secured with a 5-layer prompt injection defense.
+ClawGraph automatically crawls open-source repositories, extracts entities and relationships into a knowledge graph, and serves grounded answers via RAG — all secured with a 5-layer prompt injection defense. The interface is a Telegram app bot that uses the OpenClaw skill to interact with the knowledge graph.
 
-## 🎯 Conceptual Components
+## Conceptual Components
 
 | Conceptual Component | Implementation |
 |---|---|
 | **Orchestration Pipeline** | Directed Acyclic Graph-based crawl→extract→embed→graph→curate pipeline with retry and scheduling |
 | **Custom MCP Server** | Python MCP server exposing 9 GitHub API tools via the Model Context Protocol |
 | **AI Pipeline** | Gemini Flash Lite (extraction/classification) + Gemini 2.5 Flash (reasoning/curation) |
-| **Knowledge Graph & RAG** | Neo4j/NetworkX graph + embedding search → graph-grounded answer generation with Chain of Thought reasoning |
+| **Knowledge Graph & RAG** | Neo4j / NetworkX graph + embedding search → graph-grounded answer generation with Chain of Thought reasoning |
 | **Prompt Injection Prevention** | 5-layer defense: sanitizer → classifier → canary tokens → output guardrails → audit |
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 GitHub Repos ──▶ [GitHub MCP Server] ──▶ [Orchestration Pipeline] ──▶ [Knowledge Graph]
-                  (9 Python tools)        crawl→extract→embed→         (Neo4j / NetworkX)
+                  (Python)                crawl→extract→embed→         (Neo4j / NetworkX)
                                           graph_update→curate                │
                                                                              ▼
 Telegram Bot ◀── [OpenClaw Skill] ◀── [RAG Engine] ◀── [Graph + Vector Retrieval]
@@ -35,7 +35,7 @@ Telegram Bot ◀── [OpenClaw Skill] ◀── [RAG Engine] ◀── [Graph 
                                     L5: Audit Logger
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.12+
@@ -94,16 +94,16 @@ ClawGraph/
 ├── pipeline/             # Orchestration Pipeline (5 stages + scheduler)
 │   └── stages/           # crawl, extract, embed, graph_update, curate
 ├── graph/                # Knowledge Graph (Neo4j + NetworkX backends)
-├── rag/                  # RAG Engine (retriever, generator, embeddings)
+├── RAG/                  # RAG Engine (retriever, generator, embeddings)
 ├── security/             # 5-Layer Prompt Injection Defense
 ├── config.py             # 12-factor app configuration
 ├── models.py             # Pydantic data models
 └── main.py               # FastAPI application
 openclaw_skill/           # OpenClaw integration (SKILL.md + tool)
-tests/                    # 50+ tests including red-team security suite
+tests/                    # Tests including red-team security suite
 ```
 
-## 🔐 Security Model
+## Security Model
 
 All user queries pass through a 5-layer defense pipeline:
 
@@ -113,7 +113,7 @@ All user queries pass through a 5-layer defense pipeline:
 4. **L4 — Output Guardrails**: Blocks system prompt fragments, credentials, and code execution patterns
 5. **L5 — Audit Logger**: JSON-lines log of all security events for monitoring
 
-## 🤖 GitHub MCP Server
+## GitHub MCP Server
 
 Custom Python MCP server with 9 tools:
 
