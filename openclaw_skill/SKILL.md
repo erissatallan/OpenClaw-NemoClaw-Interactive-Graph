@@ -1,6 +1,11 @@
 ---
 name: ClawGraph
 description: Query the OpenClaw/NemoClaw knowledge graph, trigger pipeline runs, and view security reports.
+config:
+  ClawGraph_URL:
+    type: string
+    description: URL of the ClawGraph API
+    default: "http://localhost:8000"
 ---
 
 # ClawGraph Skill
