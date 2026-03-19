@@ -1,4 +1,4 @@
-# 🔥 OpenClaw & NemoClaw Interactive Graph
+# 🔥 ClawGraph: OpenClaw & NemoClaw Interactive Graph
 
 **AI-powered knowledge graph builder and RAG system for the OpenClaw/NemoClaw ecosystem**
 
@@ -6,6 +6,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ClawGraph automatically crawls open-source repositories, extracts entities and relationships into a knowledge graph, and serves grounded answers via RAG — all secured with a 5-layer prompt injection defense.
+
+## 🎯 Conceptual Components
+
+| Conceptual Component | Implementation |
+|---|---|
+| **Orchestration Pipeline** | Directed Acyclic Graph-based crawl→extract→embed→graph→curate pipeline with retry and scheduling |
+| **Custom MCP Server** | Python MCP server exposing 9 GitHub API tools via the Model Context Protocol |
+| **AI Pipeline** | Gemini Flash Lite (extraction/classification) + Gemini 2.5 Flash (reasoning/curation) |
+| **Knowledge Graph & RAG** | Neo4j/NetworkX graph + embedding search → graph-grounded answer generation with Chain of Thought reasoning |
+| **Prompt Injection Prevention** | 5-layer defense: sanitizer → classifier → canary tokens → output guardrails → audit |
 
 ## 🏗️ Architecture
 
