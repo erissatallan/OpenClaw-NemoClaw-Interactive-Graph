@@ -66,7 +66,7 @@ class PipelineOrchestrator:
         result = PipelineResult()
         start_time = time.time()
 
-        logger.info("pipeline_started", targets=self.settings.pipeline_targets)
+        logger.info(f"pipeline_started targets={self.settings.pipeline_targets}")
 
         # ── Stage 1: CRAWL ──
         crawl_results = await self._run_stage(
@@ -121,11 +121,10 @@ class PipelineOrchestrator:
         result.duration_seconds = time.time() - start_time
 
         logger.info(
-            "pipeline_completed",
-            status=result.status,
-            duration=result.duration_seconds,
-            completed=result.stages_completed,
-            failed=result.stages_failed,
+            f"pipeline_completed status={result.status} "
+            f"duration={result.duration_seconds:.1f}s "
+            f"completed={result.stages_completed} "
+            f"failed={result.stages_failed}"
         )
 
         return result.to_dict()
@@ -134,17 +133,15 @@ class PipelineOrchestrator:
         """Run a stage with retry and error isolation."""
         for attempt in range(1, self.MAX_RETRIES + 1):
             try:
-                logger.info("stage_started", stage=name, attempt=attempt)
+                logger.info(f"stage_started stage={name} attempt={attempt}")
                 output = await fn()
                 result.stages_completed.append(name)
-                logger.info("stage_completed", stage=name)
+                logger.info(f"stage_completed stage={name}")
                 return output
             except Exception as exc:
                 logger.error(
-                    "stage_failed",
-                    stage=name,
-                    attempt=attempt,
-                    error=str(exc),
+                    f"stage_failed stage={name} attempt={attempt} "
+                    f"error={exc}"
                 )
                 if attempt == self.MAX_RETRIES:
                     result.stages_failed.append(name)

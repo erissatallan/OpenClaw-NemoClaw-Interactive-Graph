@@ -47,7 +47,7 @@ class PipelineScheduler:
         )
 
         self._scheduler.start()
-        logger.info("scheduler_started", schedule=cron_expr)
+        logger.info(f"scheduler_started schedule={cron_expr}")
 
     async def _run_pipeline(self):
         """Execute the pipeline."""
@@ -56,7 +56,7 @@ class PipelineScheduler:
         logger.info("scheduled_pipeline_run_started")
         orchestrator = PipelineOrchestrator(graph=self.graph, settings=self.settings)
         result = await orchestrator.run()
-        logger.info("scheduled_pipeline_run_completed", result=result)
+        logger.info(f"scheduled_pipeline_run_completed result={result}")
 
     def stop(self):
         """Stop the scheduler."""

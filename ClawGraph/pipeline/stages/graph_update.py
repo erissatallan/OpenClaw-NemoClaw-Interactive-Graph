@@ -66,9 +66,7 @@ class GraphUpdateStage:
 
                 except Exception as exc:
                     logger.debug(
-                        "entity_upsert_failed",
-                        entity=entity.qualified_name,
-                        error=str(exc),
+                        f"entity_upsert_failed entity={entity.qualified_name} error={exc}"
                     )
 
             # ── Upsert relationships ──
@@ -88,9 +86,7 @@ class GraphUpdateStage:
                     result.relationships_created += 1
                 except Exception as exc:
                     logger.debug(
-                        "relationship_upsert_failed",
-                        rel=f"{rel.from_entity}-[{rel.rel_type}]->{rel.to_entity}",
-                        error=str(exc),
+                        f"relationship_upsert_failed rel={rel.from_entity}-[{rel.rel_type}]->{rel.to_entity} error={exc}"
                     )
 
         # ── Upsert code chunks with embeddings ──
@@ -112,12 +108,11 @@ class GraphUpdateStage:
                     seen_node_ids.add(node_id)
                     result.nodes_created += 1
                 except Exception as exc:
-                    logger.debug("chunk_upsert_failed", chunk_id=chunk.id, error=str(exc))
+                    logger.debug(f"chunk_upsert_failed chunk_id={chunk.id} error={exc}")
 
         logger.info(
-            "graph_update_completed",
-            nodes_created=result.nodes_created,
-            relationships_created=result.relationships_created,
+            f"graph_update_completed nodes_created={result.nodes_created} "
+            f"relationships_created={result.relationships_created}"
         )
 
         return result

@@ -30,7 +30,7 @@ class RAGRetriever:
 
     async def query(self, question: str) -> QueryResponse:
         """Execute the full RAG pipeline for a question."""
-        logger.info("rag_query_started", question=question[:100])
+        logger.info(f"rag_query_started question={question[:100]}")
 
         # Step 1: Extract key terms for graph lookup
         terms = self._extract_terms(question)
@@ -79,7 +79,7 @@ class RAGRetriever:
             )
             code_chunks = [r.get("node", r) for r in chunk_results]
         except Exception as exc:
-            logger.warning("vector_search_failed", error=str(exc))
+            logger.warning(f"vector_search_failed error={exc}")
 
         # Step 5: Generate answer with CoT
         answer_text, reasoning_trace = await self.generator.generate(
@@ -99,9 +99,8 @@ class RAGRetriever:
             })
 
         logger.info(
-            "rag_query_completed",
-            entities_found=len(expanded_entities),
-            chunks_found=len(code_chunks),
+            f"rag_query_completed entities_found={len(expanded_entities)} "
+            f"chunks_found={len(code_chunks)}"
         )
 
         return QueryResponse(

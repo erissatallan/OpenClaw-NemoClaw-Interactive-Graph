@@ -80,7 +80,7 @@ class ExtractStage:
         all_relationships: list[Relationship] = []
         repo = crawl_result.repo
 
-        logger.info("extract_started", repo=repo, files=len(crawl_result.files))
+        logger.info(f"extract_started repo={repo} files={len(crawl_result.files)}")
 
         # Process files in batches
         file_items = list(crawl_result.files.items())
@@ -95,7 +95,7 @@ class ExtractStage:
                     all_entities.extend(entities)
                     all_relationships.extend(relationships)
                 except Exception as exc:
-                    logger.warning("extract_file_failed", file=file_path, error=str(exc))
+                    logger.warning(f"extract_file_failed file={file_path} error={exc}")
 
         # Extract from issues and PRs
         for issue in crawl_result.issues[:20]:  # Limit to avoid rate limits
@@ -106,10 +106,9 @@ class ExtractStage:
                 pass
 
         logger.info(
-            "extract_completed",
-            repo=repo,
-            entities=len(all_entities),
-            relationships=len(all_relationships),
+            f"extract_completed repo={repo} "
+            f"entities={len(all_entities)} "
+            f"relationships={len(all_relationships)}"
         )
 
         return ExtractionResult(

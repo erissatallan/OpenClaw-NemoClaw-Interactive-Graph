@@ -132,11 +132,11 @@ class CurateStage:
                 )
 
             result = CurationResult(actions=actions, reasoning_trace=reasoning_trace)
-            logger.info("curate_completed", actions=len(actions))
+            logger.info(f"curate_completed actions={len(actions)}")
             return result
 
         except Exception as exc:
-            logger.error("curate_failed", error=str(exc))
+            logger.error(f"curate_failed error={exc}")
             return CurationResult(
                 actions=[],
                 reasoning_trace=f"Curation failed: {exc}",

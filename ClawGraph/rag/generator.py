@@ -123,7 +123,7 @@ class RAGGenerator:
             return answer, reasoning
 
         except Exception as exc:
-            logger.error("rag_generation_failed", error=str(exc))
+            logger.error(f"rag_generation_failed error={exc}")
             return (
                 f"❌ Failed to generate answer: {exc}",
                 f"Generation error: {exc}",

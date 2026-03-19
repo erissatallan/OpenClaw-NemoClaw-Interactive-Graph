@@ -78,13 +78,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                 username=settings.neo4j_username,
                 password=settings.neo4j_password,
             )
-            logger.info("graph_backend_initialized", backend="neo4j")
+            logger.info("graph_backend_initialized backend=neo4j")
         except Exception as exc:
-            logger.warning("neo4j_connection_failed", error=str(exc), fallback="memory")
+            logger.warning(f"neo4j_connection_failed error={exc} fallback=memory")
             state.graph = MemoryGraphClient()
     else:
         state.graph = MemoryGraphClient()
-        logger.info("graph_backend_initialized", backend="memory")
+        logger.info("graph_backend_initialized backend=memory")
 
     # Initialize RAG retriever
     if settings.gemini_api_key:
@@ -143,7 +143,7 @@ async def query_rag(request: QueryRequest) -> QueryResponse:
     verdict = await state.defense.check_input(request.question)
 
     if verdict.classification == "malicious":
-        logger.warning("injection_blocked", input=request.question[:100], verdict=verdict.model_dump())
+        logger.warning(f"injection_blocked input={request.question[:100]}")
         return QueryResponse(
             answer="⚠️ Your query was flagged by our security system and cannot be processed.",
             security_verdict=verdict,
@@ -151,7 +151,7 @@ async def query_rag(request: QueryRequest) -> QueryResponse:
 
     # If suspicious, proceed with caution (logged)
     if verdict.classification == "suspicious":
-        logger.info("suspicious_query", input=request.question[:100])
+        logger.info(f"suspicious_query input={request.question[:100]}")
 
     # Run RAG
     response = await state.rag.query(verdict.sanitized_text or request.question)
@@ -159,7 +159,7 @@ async def query_rag(request: QueryRequest) -> QueryResponse:
     # Check output guardrails
     output_verdict = await state.defense.check_output(response.answer)
     if output_verdict.output_blocked:
-        logger.warning("output_blocked", reason=output_verdict.reason)
+        logger.warning(f"output_blocked reason={output_verdict.reason}")
         return QueryResponse(
             answer="⚠️ The response was filtered by our security system.",
             security_verdict=output_verdict,

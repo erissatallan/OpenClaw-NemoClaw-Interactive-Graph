@@ -32,7 +32,7 @@ class EmbedStage:
         """Chunk files and generate embeddings."""
         chunks: list[CodeChunk] = []
 
-        logger.info("embed_started", repo=crawl_result.repo, files=len(crawl_result.files))
+        logger.info(f"embed_started repo={crawl_result.repo} files={len(crawl_result.files)}")
 
         for file_path, content in crawl_result.files.items():
             language = self._detect_language(file_path)
@@ -55,14 +55,12 @@ class EmbedStage:
                     batch[j].embedding = embedding_obj.values
 
             except Exception as exc:
-                logger.warning("embed_batch_failed", batch_start=i, error=str(exc))
+                logger.warning(f"embed_batch_failed batch_start={i} error={exc}")
 
         embedded_count = sum(1 for c in chunks if c.embedding is not None)
         logger.info(
-            "embed_completed",
-            repo=crawl_result.repo,
-            total_chunks=len(chunks),
-            embedded=embedded_count,
+            f"embed_completed repo={crawl_result.repo} "
+            f"total_chunks={len(chunks)} embedded={embedded_count}"
         )
 
         return EmbeddingResult(chunks=chunks, source_repo=crawl_result.repo)

@@ -91,7 +91,7 @@ class InjectionClassifier:
             return classification, confidence, reason
 
         except Exception as exc:
-            logger.warning("classifier_failed", error=str(exc))
+            logger.warning(f"classifier_failed error={exc}")
             # On failure, fall back to heuristic
             return self._heuristic_classify(text)
 

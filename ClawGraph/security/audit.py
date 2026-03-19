@@ -45,7 +45,7 @@ class AuditLogger:
             with open(self._log_path, "a") as f:
                 f.write(json.dumps(event, default=str) + "\n")
         except Exception as exc:
-            logger.warning("audit_log_write_failed", error=str(exc))
+            logger.warning(f"audit_log_write_failed error={exc}")
 
     def get_recent_events(self, limit: int = 50) -> list[dict[str, Any]]:
         """Return recent security events from memory."""

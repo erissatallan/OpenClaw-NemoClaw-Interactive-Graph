@@ -28,7 +28,7 @@ class CrawlStage:
         client = GitHubClient(token=self.settings.github_token)
 
         try:
-            logger.info("crawl_started", owner=owner, repo=repo)
+            logger.info(f"crawl_started owner={owner} repo={repo}")
             result = CrawlResult(repo=f"{owner}/{repo}")
 
             # Fetch file tree and content
@@ -42,14 +42,14 @@ class CrawlStage:
                     self._normalize_issue(i) for i in issues if "pull_request" not in i
                 ]
             except Exception as exc:
-                logger.warning("crawl_issues_failed", error=str(exc))
+                logger.warning(f"crawl_issues_failed error={exc}")
 
             # Fetch PRs (last 30 merged)
             try:
                 prs = await client.list_pull_requests(owner, repo, state="closed", per_page=30)
                 result.pull_requests = [self._normalize_pr(pr) for pr in prs if pr.get("merged_at")]
             except Exception as exc:
-                logger.warning("crawl_prs_failed", error=str(exc))
+                logger.warning(f"crawl_prs_failed error={exc}")
 
             # Fetch contributors
             try:
@@ -59,14 +59,12 @@ class CrawlStage:
                     for c in contributors
                 ]
             except Exception as exc:
-                logger.warning("crawl_contributors_failed", error=str(exc))
+                logger.warning(f"crawl_contributors_failed error={exc}")
 
             logger.info(
-                "crawl_completed",
-                repo=f"{owner}/{repo}",
-                files=len(result.files),
-                issues=len(result.issues),
-                prs=len(result.pull_requests),
+                f"crawl_completed repo={owner}/{repo} "
+                f"files={len(result.files)} issues={len(result.issues)} "
+                f"prs={len(result.pull_requests)}"
             )
             return result
 
@@ -82,7 +80,7 @@ class CrawlStage:
         try:
             items = await client.list_repo_files(owner, repo, path=path)
         except Exception as exc:
-            logger.warning("crawl_files_failed", path=path, error=str(exc))
+            logger.warning(f"crawl_files_failed path={path} error={exc}")
             return files
 
         for item in items:
@@ -110,7 +108,7 @@ class CrawlStage:
                     content = await client.get_file_content(owner, repo, item_path)
                     files[item_path] = content
                 except Exception as exc:
-                    logger.debug("crawl_file_content_failed", path=item_path, error=str(exc))
+                    logger.debug(f"crawl_file_content_failed path={item_path} error={exc}")
 
         return files
 
