@@ -24,6 +24,7 @@ dependencies = [
     "apscheduler>=3.10",
     "python-dotenv>=1.0",
     "structlog>=24.0",
+    "python-telegram-bot>=21.0",
 ]
 
 [project.optional-dependencies]
