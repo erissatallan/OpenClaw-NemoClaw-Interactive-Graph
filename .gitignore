@@ -34,3 +34,6 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Portfolio (personal prep, not project code)
+portfolio/

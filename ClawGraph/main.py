@@ -9,6 +9,9 @@ from typing import AsyncGenerator
 import structlog
 import uvicorn
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from pathlib import Path
 
 from ClawGraph.config import Settings, get_settings
 from ClawGraph.graph.base import GraphClient
@@ -112,6 +115,14 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # ── Routes (SPEC §4) ──
 
@@ -194,6 +205,50 @@ async def security_audit():
     if not state.defense:
         return {"events": []}
     return {"events": state.defense.get_recent_events(limit=50)}
+
+
+@app.get("/api/graph/export")
+async def graph_export():
+    """Export full graph as nodes + edges for visualization."""
+    graph = state.graph
+    # For memory client, access the internal NetworkX graph
+    if hasattr(graph, '_graph'):
+        G = graph._graph
+        nodes = []
+        for node_id, data in G.nodes(data=True):
+            node = {
+                "id": node_id,
+                "label": data.get("_label", "Unknown"),
+                "name": data.get("name", data.get("qualified_name", node_id)),
+                "qualified_name": data.get("qualified_name", ""),
+                "description": data.get("description", "")[:200],
+                "path": data.get("path", ""),
+            }
+            nodes.append(node)
+
+        edges = []
+        for u, v, data in G.edges(data=True):
+            edges.append({
+                "from": u,
+                "to": v,
+                "rel_type": data.get("_rel_type", "RELATED"),
+                "confidence": data.get("confidence", 1.0),
+            })
+
+        return {"nodes": nodes, "edges": edges}
+    else:
+        # Neo4j fallback — query all
+        all_nodes = await graph.query("*")
+        return {"nodes": all_nodes, "edges": []}
+
+
+@app.get("/viz", response_class=HTMLResponse)
+async def visualization():
+    """Serve interactive graph visualization page."""
+    viz_path = Path(__file__).parent / "static" / "viz.html"
+    if viz_path.exists():
+        return viz_path.read_text()
+    return HTMLResponse("<h1>Visualization not found</h1>", status_code=404)
 
 
 # ── Entry point ──

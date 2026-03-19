@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClawGraph — Knowledge Graph Visualization</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --text-primary: #e8e8f0;
+            --text-secondary: #8888aa;
+            --text-muted: #555577;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #a855f7;
+            --accent-green: #22c55e;
+            --accent-orange: #f97316;
+            --accent-pink: #ec4899;
+            --accent-yellow: #eab308;
+            --accent-blue: #3b82f6;
+            --glass-bg: rgba(18, 18, 26, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
+            --glow-purple: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ─── Animated Background ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(0, 212, 255, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(34, 197, 94, 0.03) 0%, transparent 50%);
+            z-index: 0;
+            animation: bgPulse 8s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* ─── Header ─── */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 28px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .header-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: var(--glow-cyan);
+        }
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        .header-title span {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* ─── Stats Bar ─── */
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+        .stat-value {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        /* ─── Network Container ─── */
+        #graph-container {
+            position: absolute;
+            inset: 0;
+            top: 68px;
+            z-index: 1;
+        }
+
+        /* ─── Legend ─── */
+        .legend {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 16px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            min-width: 180px;
+        }
+        .legend-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        /* ─── Node Detail Panel ─── */
+        .detail-panel {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            width: 340px;
+            padding: 20px 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+        .detail-panel.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+        .detail-type {
+            display: inline-block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .detail-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            word-break: break-all;
+        }
+        .detail-qn {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+        .detail-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .detail-path {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--accent-cyan);
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+
+        /* ─── Loading Overlay ─── */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+            transition: opacity 0.6s ease;
+        }
+        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--bg-tertiary);
+            border-top: 3px solid var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loading-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ─── Edge Legend ─── */
+        .edge-legend {
+            position: fixed;
+            bottom: 24px;
+            left: 230px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 16px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            min-width: 160px;
+        }
+        .edge-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .edge-line {
+            width: 20px;
+            height: 2px;
+            border-radius: 1px;
+        }
+
+        /* ─── Controls ─── */
+        .controls {
+            position: fixed;
+            top: 84px;
+            right: 24px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+        .control-btn:hover {
+            color: var(--accent-cyan);
+            border-color: rgba(0, 212, 255, 0.2);
+            box-shadow: var(--glow-cyan);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading knowledge graph…</div>
+</div>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-left">
+        <div class="header-logo">🧠</div>
+        <div>
+            <div class="header-title"><span>ClawGraph</span> Visualization</div>
+            <div class="header-subtitle">OpenClaw & NemoClaw Knowledge Graph</div>
+        </div>
+    </div>
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-value" id="stat-nodes">—</span>
+            <span class="stat-label">Nodes</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value" id="stat-edges">—</span>
+            <span class="stat-label">Edges</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value" id="stat-repos">—</span>
+            <span class="stat-label">Repos</span>
+        </div>
+    </div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+    <button class="control-btn" id="btn-fit" title="Fit to screen">⊞</button>
+    <button class="control-btn" id="btn-physics" title="Toggle physics">⚡</button>
+    <button class="control-btn" id="btn-labels" title="Toggle labels">Aa</button>
+</div>
+
+<!-- Graph Container -->
+<div id="graph-container"></div>
+
+<!-- Node Legend -->
+<div class="legend">
+    <div class="legend-title">Entity Types</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#00d4ff; color:#00d4ff;"></div> Repository</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#a855f7; color:#a855f7;"></div> Module</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#22c55e; color:#22c55e;"></div> Class</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f97316; color:#f97316;"></div> Function</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ec4899; color:#ec4899;"></div> Concept</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6; color:#3b82f6;"></div> CodeChunk</div>
+</div>
+
+<!-- Edge Legend -->
+<div class="edge-legend">
+    <div class="legend-title">Relationships</div>
+    <div class="edge-item"><div class="edge-line" style="background:#667799;"></div> CONTAINS</div>
+    <div class="edge-item"><div class="edge-line" style="background:#a855f7;"></div> IMPORTS</div>
+    <div class="edge-item"><div class="edge-line" style="background:#22c55e;"></div> EXTENDS</div>
+    <div class="edge-item"><div class="edge-line" style="background:#f97316;"></div> CALLS</div>
+    <div class="edge-item"><div class="edge-line" style="background:#ec4899;"></div> HAS_METHOD</div>
+    <div class="edge-item"><div class="edge-line" style="background:#3b82f6;"></div> DEFINES</div>
+</div>
+
+<!-- Detail Panel -->
+<div class="detail-panel" id="detail-panel">
+    <div class="detail-type" id="detail-type">—</div>
+    <div class="detail-name" id="detail-name">—</div>
+    <div class="detail-qn" id="detail-qn">—</div>
+    <div class="detail-desc" id="detail-desc">—</div>
+    <div class="detail-path" id="detail-path"></div>
+</div>
+
+<script>
+    // ─── Configuration ───
+    const API_BASE = window.location.origin;
+
+    const NODE_COLORS = {
+        'Repository': { bg: '#00d4ff', border: '#00b8d4', glow: 'rgba(0, 212, 255, 0.4)' },
+        'Module':     { bg: '#a855f7', border: '#9333ea', glow: 'rgba(168, 85, 247, 0.4)' },
+        'Class':      { bg: '#22c55e', border: '#16a34a', glow: 'rgba(34, 197, 94, 0.4)' },
+        'Function':   { bg: '#f97316', border: '#ea580c', glow: 'rgba(249, 115, 22, 0.4)' },
+        'Concept':    { bg: '#ec4899', border: '#db2777', glow: 'rgba(236, 72, 153, 0.4)' },
+        'CodeChunk':  { bg: '#3b82f6', border: '#2563eb', glow: 'rgba(59, 130, 246, 0.3)' },
+        'Unknown':    { bg: '#6b7280', border: '#4b5563', glow: 'rgba(107, 114, 128, 0.3)' },
+    };
+
+    const EDGE_COLORS = {
+        'CONTAINS':   '#4a5568',
+        'IMPORTS':    '#a855f7',
+        'EXTENDS':    '#22c55e',
+        'CALLS':      '#f97316',
+        'HAS_METHOD': '#ec4899',
+        'DEFINES':    '#3b82f6',
+        'IMPLEMENTS': '#eab308',
+        'RELATED':    '#374151',
+    };
+
+    const NODE_SIZES = {
+        'Repository': 28,
+        'Module':     18,
+        'Class':      16,
+        'Function':   12,
+        'Concept':    14,
+        'CodeChunk':  8,
+        'Unknown':    10,
+    };
+
+    // ─── State ───
+    let network = null;
+    let physicsEnabled = true;
+    let labelsVisible = true;
+    let graphData = null;
+
+    // ─── Fetch & Build ───
+    async function loadGraph() {
+        try {
+            const resp = await fetch(`${API_BASE}/api/graph/export`);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            graphData = await resp.json();
+            buildVisualization(graphData);
+        } catch (err) {
+            console.error('Failed to load graph:', err);
+            document.getElementById('loading').innerHTML = `
+                <div style="color:#f87171; font-size:16px; text-align:center;">
+                    <div style="font-size:48px; margin-bottom:16px;">⚠️</div>
+                    <div>Failed to load graph data</div>
+                    <div style="font-size:13px; color:#888; margin-top:8px;">${err.message}</div>
+                    <div style="font-size:12px; color:#555; margin-top:16px;">
+                        Make sure ClawGraph API is running and a crawl has been completed.
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    function buildVisualization(data) {
+        const container = document.getElementById('graph-container');
+
+        // Filter out CodeChunks to keep the graph readable (they dominate)
+        const filteredNodes = data.nodes.filter(n => n.label !== 'CodeChunk');
+        const filteredNodeIds = new Set(filteredNodes.map(n => n.id));
+        const filteredEdges = data.edges.filter(e => filteredNodeIds.has(e.from) && filteredNodeIds.has(e.to));
+
+        // Build vis.js datasets
+        const visNodes = new vis.DataSet(filteredNodes.map(n => {
+            const colors = NODE_COLORS[n.label] || NODE_COLORS['Unknown'];
+            const size = NODE_SIZES[n.label] || 10;
+            const shortName = (n.name || n.qualified_name || n.id).split('.').pop().split(':').pop();
+
+            return {
+                id: n.id,
+                label: shortName,
+                title: `<b>${n.label}</b><br>${n.qualified_name || n.id}<br>${n.description || ''}`,
+                size: size,
+                color: {
+                    background: colors.bg,
+                    border: colors.border,
+                    highlight: { background: colors.bg, border: '#ffffff' },
+                    hover: { background: colors.bg, border: '#ffffff' },
+                },
+                shadow: { enabled: true, color: colors.glow, size: 20, x: 0, y: 0 },
+                font: {
+                    color: '#c8c8d8',
+                    size: n.label === 'Repository' ? 14 : 11,
+                    face: 'Inter, sans-serif',
+                    strokeWidth: 3,
+                    strokeColor: '#0a0a0f',
+                },
+                borderWidth: 2,
+                borderWidthSelected: 3,
+                shape: n.label === 'Repository' ? 'diamond' : 'dot',
+                _data: n,
+            };
+        }));
+
+        const visEdges = new vis.DataSet(filteredEdges.map((e, i) => {
+            const color = EDGE_COLORS[e.rel_type] || '#374151';
+            return {
+                id: i,
+                from: e.from,
+                to: e.to,
+                label: e.rel_type,
+                color: { color: color, opacity: 0.5, highlight: color, hover: color },
+                font: { color: '#555577', size: 9, face: 'Inter', strokeWidth: 0, align: 'middle' },
+                arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+                smooth: { type: 'curvedCW', roundness: 0.15 },
+                width: 1.2,
+                hoverWidth: 2.5,
+            };
+        }));
+
+        // vis.js options
+        const options = {
+            nodes: {
+                shape: 'dot',
+                scaling: { min: 8, max: 30 },
+            },
+            edges: {
+                smooth: { enabled: true, type: 'curvedCW', roundness: 0.15 },
+                font: { size: 0 },  // hidden by default
+            },
+            physics: {
+                enabled: true,
+                solver: 'forceAtlas2Based',
+                forceAtlas2Based: {
+                    gravitationalConstant: -60,
+                    centralGravity: 0.008,
+                    springLength: 150,
+                    springConstant: 0.04,
+                    damping: 0.6,
+                    avoidOverlap: 0.5,
+                },
+                stabilization: {
+                    enabled: true,
+                    iterations: 200,
+                    updateInterval: 25,
+                },
+                maxVelocity: 50,
+                minVelocity: 0.75,
+            },
+            interaction: {
+                hover: true,
+                tooltipDelay: 200,
+                hideEdgesOnDrag: true,
+                hideEdgesOnZoom: true,
+                multiselect: false,
+                navigationButtons: false,
+                keyboard: { enabled: true },
+            },
+            layout: {
+                improvedLayout: true,
+                randomSeed: 42,
+            },
+        };
+
+        network = new vis.Network(container, { nodes: visNodes, edges: visEdges }, options);
+
+        // Update stats
+        document.getElementById('stat-nodes').textContent = filteredNodes.length.toLocaleString();
+        document.getElementById('stat-edges').textContent = filteredEdges.length.toLocaleString();
+        const repoCount = filteredNodes.filter(n => n.label === 'Repository').length;
+        document.getElementById('stat-repos').textContent = repoCount;
+
+        // Events
+        network.on('stabilizationIterationsDone', () => {
+            document.getElementById('loading').classList.add('hidden');
+            network.setOptions({ physics: { stabilization: { enabled: false } } });
+        });
+
+        network.on('click', (params) => {
+            const panel = document.getElementById('detail-panel');
+            if (params.nodes.length > 0) {
+                const nodeId = params.nodes[0];
+                const node = visNodes.get(nodeId);
+                const d = node._data;
+                const colors = NODE_COLORS[d.label] || NODE_COLORS['Unknown'];
+
+                document.getElementById('detail-type').textContent = d.label;
+                document.getElementById('detail-type').style.background = colors.bg + '22';
+                document.getElementById('detail-type').style.color = colors.bg;
+                document.getElementById('detail-name').textContent = d.name || d.id;
+                document.getElementById('detail-qn').textContent = d.qualified_name || d.id;
+                document.getElementById('detail-desc').textContent = d.description || 'No description available.';
+                document.getElementById('detail-path').textContent = d.path ? `📁 ${d.path}` : '';
+                panel.classList.add('visible');
+            } else {
+                panel.classList.remove('visible');
+            }
+        });
+
+        // Simple stabilization timeout fallback
+        setTimeout(() => {
+            document.getElementById('loading').classList.add('hidden');
+        }, 8000);
+    }
+
+    // ─── Controls ───
+    document.getElementById('btn-fit').addEventListener('click', () => {
+        if (network) network.fit({ animation: { duration: 500, easingFunction: 'easeInOutCubic' } });
+    });
+    document.getElementById('btn-physics').addEventListener('click', () => {
+        physicsEnabled = !physicsEnabled;
+        if (network) network.setOptions({ physics: { enabled: physicsEnabled } });
+        document.getElementById('btn-physics').style.color = physicsEnabled ? '#00d4ff' : '#555';
+    });
+    document.getElementById('btn-labels').addEventListener('click', () => {
+        labelsVisible = !labelsVisible;
+        if (network) {
+            network.setOptions({
+                edges: { font: { size: labelsVisible ? 9 : 0 } },
+                nodes: { font: { size: labelsVisible ? 11 : 0 } },
+            });
+        }
+        document.getElementById('btn-labels').style.color = labelsVisible ? '#00d4ff' : '#555';
+    });
+
+    // ─── Init ───
+    loadGraph();
+</script>
+</body>
+</html>
