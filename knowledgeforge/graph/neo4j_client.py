@@ -7,8 +7,8 @@ from typing import Any
 
 from neo4j import AsyncGraphDatabase, AsyncDriver
 
-from knowledgeforge.graph.base import GraphClient
-from knowledgeforge.models import GraphStats
+from ClawGraph.graph.base import GraphClient
+from ClawGraph.models import GraphStats
 
 logger = logging.getLogger(__name__)
 

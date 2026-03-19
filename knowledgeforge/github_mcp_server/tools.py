@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from knowledgeforge.github_mcp_server.github_client import GitHubClient
+from ClawGraph.github_mcp_server.github_client import GitHubClient
 
 
 async def get_repo_info(client: GitHubClient, owner: str, repo: str) -> dict[str, Any]:

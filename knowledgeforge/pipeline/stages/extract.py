@@ -9,8 +9,8 @@ from typing import Any
 from google import genai
 from google.genai import types
 
-from knowledgeforge.config import Settings
-from knowledgeforge.models import CrawlResult, Entity, ExtractionResult, Relationship
+from ClawGraph.config import Settings
+from ClawGraph.models import CrawlResult, Entity, ExtractionResult, Relationship
 
 logger = logging.getLogger(__name__)
 

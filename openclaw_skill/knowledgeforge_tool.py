@@ -1,4 +1,4 @@
-"""OpenClaw skill tool — HTTP client for KnowledgeForge API (SPEC §2.6)."""
+"""OpenClaw skill tool — HTTP client for ClawGraph API (SPEC §2.6)."""
 
 from __future__ import annotations
 
@@ -9,11 +9,11 @@ import httpx
 DEFAULT_URL = "http://localhost:8000"
 
 
-class KnowledgeForgeTool:
-    """HTTP client that OpenClaw's skill system uses to call the KnowledgeForge API."""
+class ClawGraphTool:
+    """HTTP client that OpenClaw's skill system uses to call the ClawGraph API."""
 
     def __init__(self, base_url: str | None = None):
-        self.base_url = base_url or os.environ.get("KNOWLEDGEFORGE_URL", DEFAULT_URL)
+        self.base_url = base_url or os.environ.get("ClawGraph_URL", DEFAULT_URL)
         self._client = httpx.AsyncClient(base_url=self.base_url, timeout=60.0)
 
     async def query(self, question: str) -> str:

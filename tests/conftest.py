@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from knowledgeforge.config import Settings
-from knowledgeforge.graph.memory_client import MemoryGraphClient
+from ClawGraph.config import Settings
+from ClawGraph.graph.memory_client import MemoryGraphClient
 
 
 @pytest.fixture

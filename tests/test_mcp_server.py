@@ -7,8 +7,8 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from knowledgeforge.github_mcp_server.github_client import GitHubClient, GitHubClientError
-from knowledgeforge.github_mcp_server import tools
+from ClawGraph.github_mcp_server.github_client import GitHubClient, GitHubClientError
+from ClawGraph.github_mcp_server import tools
 
 
 @pytest.fixture

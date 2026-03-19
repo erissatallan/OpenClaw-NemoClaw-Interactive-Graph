@@ -8,9 +8,9 @@ import logging
 from google import genai
 from google.genai import types
 
-from knowledgeforge.config import Settings
-from knowledgeforge.graph.base import GraphClient
-from knowledgeforge.models import CurationAction, CurationResult
+from ClawGraph.config import Settings
+from ClawGraph.graph.base import GraphClient
+from ClawGraph.models import CurationAction, CurationResult
 
 logger = logging.getLogger(__name__)
 

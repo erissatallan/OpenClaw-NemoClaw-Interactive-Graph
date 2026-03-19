@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from knowledgeforge.models import SecurityVerdict
+from ClawGraph.models import SecurityVerdict
 
 logger = logging.getLogger(__name__)
 

@@ -5,9 +5,9 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from knowledgeforge.config import Settings
-from knowledgeforge.github_mcp_server.github_client import GitHubClient
-from knowledgeforge.models import CrawlResult
+from ClawGraph.config import Settings
+from ClawGraph.github_mcp_server.github_client import GitHubClient
+from ClawGraph.models import CrawlResult
 
 logger = logging.getLogger(__name__)
 

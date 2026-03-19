@@ -1,4 +1,4 @@
-# KnowledgeForge — Specification Document
+# ClawGraph — Specification Document
 
 > **Version:** 1.0.0
 > **Status:** Draft — Pending User Approval
@@ -8,7 +8,7 @@
 
 ## 1. Purpose
 
-KnowledgeForge is a portfolio project that demonstrates six employer-desired AI skills in a single, cohesive system:
+ClawGraph is a portfolio project that demonstrates six employer-desired AI skills in a single, cohesive system:
 
 1. **Orchestration pipelines** — DAG-based crawl→extract→embed→graph→curate pipeline
 2. **Custom MCP** — Python MCP server exposing GitHub API tools
@@ -236,11 +236,11 @@ The Session class manages... The AgentRuntime extends...
 - `/kg crawl` — Trigger a manual pipeline run
 - `/kg security-report` — Show recent injection attempts from audit log
 
-**Integration:** The skill calls the KnowledgeForge FastAPI service over HTTP (running as a container on the same server).
+**Integration:** The skill calls the ClawGraph FastAPI service over HTTP (running as a container on the same server).
 
 ### 2.7 Telegram Handler
 
-Handled by OpenClaw's native Telegram channel — messages routed to the KnowledgeForge skill. No separate Telegram bot code needed; we wire into OpenClaw's existing Telegram integration via the skill layer.
+Handled by OpenClaw's native Telegram channel — messages routed to the ClawGraph skill. No separate Telegram bot code needed; we wire into OpenClaw's existing Telegram integration via the skill layer.
 
 ---
 
@@ -307,7 +307,7 @@ class SecurityVerdict(BaseModel):
 
 ## 4. API Surface (FastAPI)
 
-The KnowledgeForge service exposes a REST API for the OpenClaw skill to call:
+The ClawGraph service exposes a REST API for the OpenClaw skill to call:
 
 ```
 POST /api/query          — RAG query (input: question string, output: answer + sources)
@@ -366,14 +366,14 @@ WORKDIR /app
 COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY . .
 EXPOSE 8000
-CMD ["python", "-m", "knowledgeforge.main"]
+CMD ["python", "-m", "ClawGraph.main"]
 ```
 
 ### docker-compose.yml
 
 ```yaml
 services:
-  knowledgeforge:
+  ClawGraph:
     build: .
     ports:
       - "8000:8000"
@@ -405,7 +405,7 @@ volumes:
 
 ```toml
 [project]
-name = "knowledgeforge"
+name = "ClawGraph"
 version = "0.1.0"
 requires-python = ">=3.12"
 

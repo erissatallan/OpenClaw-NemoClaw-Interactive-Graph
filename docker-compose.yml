@@ -1,5 +1,5 @@
 services:
-  knowledgeforge:
+  ClawGraph:
     build: .
     ports:
       - "${API_PORT:-8000}:8000"
@@ -25,11 +25,11 @@ services:
     volumes:
       - neo4j_data:/data
     healthcheck:
-      test: ["CMD", "neo4j", "status"]
+      test: [ "CMD", "neo4j", "status" ]
       interval: 10s
       timeout: 5s
       retries: 5
-    profiles: ["dev"]
+    profiles: [ "dev" ]
 
 volumes:
   neo4j_data:

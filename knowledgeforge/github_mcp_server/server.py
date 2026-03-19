@@ -1,6 +1,6 @@
 """MCP Server entry point — registers all 9 GitHub tools (SPEC §2.1).
 
-Run standalone: python -m knowledgeforge.github_mcp_server.server
+Run standalone: python -m ClawGraph.github_mcp_server.server
 """
 
 from __future__ import annotations
@@ -10,13 +10,13 @@ import os
 
 from mcp.server.fastmcp import FastMCP
 
-from knowledgeforge.github_mcp_server.github_client import GitHubClient
-from knowledgeforge.github_mcp_server import tools as github_tools
+from ClawGraph.github_mcp_server.github_client import GitHubClient
+from ClawGraph.github_mcp_server import tools as github_tools
 
 # ── MCP Server ──
 
 mcp = FastMCP(
-    "KnowledgeForge GitHub MCP",
+    "ClawGraph GitHub MCP",
     description="Custom MCP server for GitHub API interactions — repos, code, issues, PRs, forks, contributors",
 )
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-from knowledgeforge.models import GraphStats
+from ClawGraph.models import GraphStats
 
 
 class GraphClient(ABC):

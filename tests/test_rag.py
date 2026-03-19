@@ -2,9 +2,9 @@
 
 import pytest
 
-from knowledgeforge.graph.memory_client import MemoryGraphClient
-from knowledgeforge.rag.embeddings import cosine_similarity, rank_by_similarity
-from knowledgeforge.rag.retriever import RAGRetriever
+from ClawGraph.graph.memory_client import MemoryGraphClient
+from ClawGraph.rag.embeddings import cosine_similarity, rank_by_similarity
+from ClawGraph.rag.retriever import RAGRetriever
 
 
 class TestCosineSimilarity:

@@ -10,17 +10,17 @@ import structlog
 import uvicorn
 from fastapi import FastAPI, HTTPException
 
-from knowledgeforge.config import Settings, get_settings
-from knowledgeforge.graph.base import GraphClient
-from knowledgeforge.graph.memory_client import MemoryGraphClient
-from knowledgeforge.models import (
+from ClawGraph.config import Settings, get_settings
+from ClawGraph.graph.base import GraphClient
+from ClawGraph.graph.memory_client import MemoryGraphClient
+from ClawGraph.models import (
     GraphStats,
     HealthResponse,
     QueryRequest,
     QueryResponse,
 )
-from knowledgeforge.rag.retriever import RAGRetriever
-from knowledgeforge.security.defense import DefensePipeline
+from ClawGraph.rag.retriever import RAGRetriever
+from ClawGraph.security.defense import DefensePipeline
 
 # ── Structured logging setup ──
 
@@ -71,7 +71,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Initialize graph backend
     if settings.graph_backend == "neo4j" and settings.neo4j_uri:
         try:
-            from knowledgeforge.graph.neo4j_client import Neo4jGraphClient
+            from ClawGraph.graph.neo4j_client import Neo4jGraphClient
 
             state.graph = Neo4jGraphClient(
                 uri=settings.neo4j_uri,
@@ -106,7 +106,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 # ── FastAPI app ──
 
 app = FastAPI(
-    title="KnowledgeForge",
+    title="ClawGraph",
     description="AI-powered knowledge graph builder and RAG system for OpenClaw/NemoClaw",
     version="0.1.0",
     lifespan=lifespan,
@@ -178,7 +178,7 @@ async def graph_stats() -> GraphStats:
 @app.post("/api/pipeline/run")
 async def trigger_pipeline():
     """Trigger a manual pipeline run."""
-    from knowledgeforge.pipeline.orchestrator import PipelineOrchestrator
+    from ClawGraph.pipeline.orchestrator import PipelineOrchestrator
 
     orchestrator = PipelineOrchestrator(
         graph=state.graph,
@@ -202,7 +202,7 @@ def main():
     """Run the application."""
     settings = get_settings()
     uvicorn.run(
-        "knowledgeforge.main:app",
+        "ClawGraph.main:app",
         host=settings.api_host,
         port=settings.api_port,
         log_level=settings.log_level.lower(),

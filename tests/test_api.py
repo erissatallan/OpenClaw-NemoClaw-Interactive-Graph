@@ -3,7 +3,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from knowledgeforge.main import app
+from ClawGraph.main import app
 
 
 @pytest.fixture

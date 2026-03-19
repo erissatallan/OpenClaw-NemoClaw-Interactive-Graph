@@ -6,10 +6,10 @@ import logging
 
 from google import genai
 
-from knowledgeforge.config import Settings
-from knowledgeforge.graph.base import GraphClient
-from knowledgeforge.models import QueryResponse
-from knowledgeforge.rag.generator import RAGGenerator
+from ClawGraph.config import Settings
+from ClawGraph.graph.base import GraphClient
+from ClawGraph.models import QueryResponse
+from ClawGraph.rag.generator import RAGGenerator
 
 logger = logging.getLogger(__name__)
 

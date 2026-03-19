@@ -2,7 +2,7 @@
 
 import pytest
 
-from knowledgeforge.graph.memory_client import MemoryGraphClient
+from ClawGraph.graph.memory_client import MemoryGraphClient
 
 
 @pytest.fixture

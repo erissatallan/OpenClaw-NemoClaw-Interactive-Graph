@@ -7,8 +7,8 @@ import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from knowledgeforge.config import Settings
-from knowledgeforge.graph.base import GraphClient
+from ClawGraph.config import Settings
+from ClawGraph.graph.base import GraphClient
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class PipelineScheduler:
             self._run_pipeline,
             trigger=trigger,
             id="knowledge_pipeline",
-            name="KnowledgeForge Pipeline",
+            name="ClawGraph Pipeline",
             replace_existing=True,
         )
 
@@ -51,7 +51,7 @@ class PipelineScheduler:
 
     async def _run_pipeline(self):
         """Execute the pipeline."""
-        from knowledgeforge.pipeline.orchestrator import PipelineOrchestrator
+        from ClawGraph.pipeline.orchestrator import PipelineOrchestrator
 
         logger.info("scheduled_pipeline_run_started")
         orchestrator = PipelineOrchestrator(graph=self.graph, settings=self.settings)

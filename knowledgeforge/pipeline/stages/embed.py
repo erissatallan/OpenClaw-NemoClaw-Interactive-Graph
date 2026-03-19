@@ -7,8 +7,8 @@ import re
 
 from google import genai
 
-from knowledgeforge.config import Settings
-from knowledgeforge.models import CodeChunk, CrawlResult, EmbeddingResult
+from ClawGraph.config import Settings
+from ClawGraph.models import CodeChunk, CrawlResult, EmbeddingResult
 
 logger = logging.getLogger(__name__)
 

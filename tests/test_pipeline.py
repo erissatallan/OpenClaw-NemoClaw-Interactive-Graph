@@ -6,11 +6,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from knowledgeforge.config import Settings
-from knowledgeforge.graph.memory_client import MemoryGraphClient
-from knowledgeforge.models import CrawlResult, Entity, ExtractionResult, EmbeddingResult, CodeChunk
-from knowledgeforge.pipeline.stages.graph_update import GraphUpdateStage
-from knowledgeforge.pipeline.stages.embed import EmbedStage
+from ClawGraph.config import Settings
+from ClawGraph.graph.memory_client import MemoryGraphClient
+from ClawGraph.models import CrawlResult, Entity, ExtractionResult, EmbeddingResult, CodeChunk
+from ClawGraph.pipeline.stages.graph_update import GraphUpdateStage
+from ClawGraph.pipeline.stages.embed import EmbedStage
 
 
 class TestGraphUpdateStage:
@@ -36,7 +36,7 @@ class TestGraphUpdateStage:
 
     @pytest.mark.asyncio
     async def test_upserts_relationships(self, tmp_path):
-        from knowledgeforge.models import Relationship
+        from ClawGraph.models import Relationship
 
         graph = MemoryGraphClient(persist_path=tmp_path / "test.json")
         stage = GraphUpdateStage(graph=graph)

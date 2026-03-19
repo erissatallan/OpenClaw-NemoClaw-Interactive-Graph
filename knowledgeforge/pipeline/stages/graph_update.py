@@ -5,8 +5,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from knowledgeforge.graph.base import GraphClient
-from knowledgeforge.models import (
+from ClawGraph.graph.base import GraphClient
+from ClawGraph.models import (
     EmbeddingResult,
     ExtractionResult,
     GraphUpdateResult,

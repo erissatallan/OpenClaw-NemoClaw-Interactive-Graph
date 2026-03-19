@@ -6,13 +6,13 @@ import logging
 import json
 from typing import Any
 
-from knowledgeforge.config import Settings
-from knowledgeforge.models import SecurityVerdict
-from knowledgeforge.security.audit import AuditLogger
-from knowledgeforge.security.canary import CanaryTokenSystem
-from knowledgeforge.security.classifier import InjectionClassifier
-from knowledgeforge.security.guardrails import check_output as check_output_guardrails
-from knowledgeforge.security.sanitizer import sanitize_input
+from ClawGraph.config import Settings
+from ClawGraph.models import SecurityVerdict
+from ClawGraph.security.audit import AuditLogger
+from ClawGraph.security.canary import CanaryTokenSystem
+from ClawGraph.security.classifier import InjectionClassifier
+from ClawGraph.security.guardrails import check_output as check_output_guardrails
+from ClawGraph.security.sanitizer import sanitize_input
 
 logger = logging.getLogger(__name__)
 

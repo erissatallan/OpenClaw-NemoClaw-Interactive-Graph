@@ -9,7 +9,7 @@ from typing import Literal
 from google import genai
 from google.genai import types
 
-from knowledgeforge.config import Settings
+from ClawGraph.config import Settings
 
 logger = logging.getLogger(__name__)
 

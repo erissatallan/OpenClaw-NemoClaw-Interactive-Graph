@@ -7,11 +7,11 @@ import logging
 from google import genai
 from google.genai import types
 
-from knowledgeforge.config import Settings
+from ClawGraph.config import Settings
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are KnowledgeForge, an expert AI assistant that answers questions about the OpenClaw and NemoClaw open-source projects using a knowledge graph.
+SYSTEM_PROMPT = """You are ClawGraph, an expert AI assistant that answers questions about the OpenClaw and NemoClaw open-source projects using a knowledge graph.
 
 You MUST follow this response format:
 

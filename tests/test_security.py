@@ -2,12 +2,12 @@
 
 import pytest
 
-from knowledgeforge.security.sanitizer import sanitize_input
-from knowledgeforge.security.canary import CanaryTokenSystem
-from knowledgeforge.security.guardrails import check_output
-from knowledgeforge.security.classifier import InjectionClassifier
-from knowledgeforge.security.defense import DefensePipeline
-from knowledgeforge.config import Settings
+from ClawGraph.security.sanitizer import sanitize_input
+from ClawGraph.security.canary import CanaryTokenSystem
+from ClawGraph.security.guardrails import check_output
+from ClawGraph.security.classifier import InjectionClassifier
+from ClawGraph.security.defense import DefensePipeline
+from ClawGraph.config import Settings
 
 
 # ── L1: Sanitizer Tests ──

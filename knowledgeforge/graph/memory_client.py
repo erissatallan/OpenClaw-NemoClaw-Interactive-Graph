@@ -10,8 +10,8 @@ from typing import Any
 import networkx as nx
 import numpy as np
 
-from knowledgeforge.graph.base import GraphClient
-from knowledgeforge.models import GraphStats
+from ClawGraph.graph.base import GraphClient
+from ClawGraph.models import GraphStats
 
 logger = logging.getLogger(__name__)
 

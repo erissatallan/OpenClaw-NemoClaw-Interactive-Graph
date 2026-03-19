@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "knowledgeforge"
+name = "ClawGraph"
 version = "0.1.0"
 description = "AI-powered knowledge graph builder and RAG system for the OpenClaw/NemoClaw ecosystem"
 readme = "README.md"

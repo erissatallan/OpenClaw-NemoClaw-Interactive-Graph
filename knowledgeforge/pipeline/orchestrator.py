@@ -7,14 +7,14 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
-from knowledgeforge.config import Settings
-from knowledgeforge.graph.base import GraphClient
-from knowledgeforge.models import CrawlResult, ExtractionResult, EmbeddingResult, GraphUpdateResult, CurationResult
-from knowledgeforge.pipeline.stages.crawl import CrawlStage
-from knowledgeforge.pipeline.stages.extract import ExtractStage
-from knowledgeforge.pipeline.stages.embed import EmbedStage
-from knowledgeforge.pipeline.stages.graph_update import GraphUpdateStage
-from knowledgeforge.pipeline.stages.curate import CurateStage
+from ClawGraph.config import Settings
+from ClawGraph.graph.base import GraphClient
+from ClawGraph.models import CrawlResult, ExtractionResult, EmbeddingResult, GraphUpdateResult, CurationResult
+from ClawGraph.pipeline.stages.crawl import CrawlStage
+from ClawGraph.pipeline.stages.extract import ExtractStage
+from ClawGraph.pipeline.stages.embed import EmbedStage
+from ClawGraph.pipeline.stages.graph_update import GraphUpdateStage
+from ClawGraph.pipeline.stages.curate import CurateStage
 
 logger = logging.getLogger(__name__)
 

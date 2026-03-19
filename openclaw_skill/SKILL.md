@@ -1,11 +1,11 @@
 ---
-name: KnowledgeForge
+name: ClawGraph
 description: Query the OpenClaw/NemoClaw knowledge graph, trigger pipeline runs, and view security reports.
 ---
 
-# KnowledgeForge Skill
+# ClawGraph Skill
 
-KnowledgeForge is an AI-powered knowledge graph built from the OpenClaw and NemoClaw open-source ecosystems.
+ClawGraph is an AI-powered knowledge graph built from the OpenClaw and NemoClaw open-source ecosystems.
 It provides graph-grounded RAG answers about the codebase, architecture, and community.
 
 ## Commands
@@ -35,8 +35,8 @@ Show recent prompt injection attempts detected by the security pipeline.
 5. All queries pass through a **5-layer prompt injection defense**
 
 ## Setup
-The KnowledgeForge service must be running (default: `http://localhost:8000`).
-Set `KNOWLEDGEFORGE_URL` in your OpenClaw config to point to the service.
+The ClawGraph service must be running (default: `http://localhost:8000`).
+Set `ClawGraph_URL` in your OpenClaw config to point to the service.
 
 ## Environment Variables
-- `KNOWLEDGEFORGE_URL` — URL of the KnowledgeForge API (default: `http://localhost:8000`)
+- `ClawGraph_URL` — URL of the ClawGraph API (default: `http://localhost:8000`)

@@ -2,7 +2,7 @@
 
 import pytest
 
-from knowledgeforge.models import (
+from ClawGraph.models import (
     CodeChunk,
     CrawlResult,
     CurationAction,

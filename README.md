@@ -1,22 +1,11 @@
-# 🔥 KnowledgeForge
+# 🔥 OpenClaw & NemoClaw Interactive Graph
 
 **AI-powered knowledge graph builder and RAG system for the OpenClaw/NemoClaw ecosystem**
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-KnowledgeForge automatically crawls open-source repositories, extracts entities and relationships into a knowledge graph, and serves grounded answers via RAG — all secured with a 5-layer prompt injection defense.
-
-## 🎯 Portfolio Skills Demonstrated
-
-| Skill | Implementation |
-|---|---|
-| **Orchestration Pipeline** | DAG-based crawl→extract→embed→graph→curate pipeline with retry and scheduling |
-| **Custom MCP Server** | Python MCP server exposing 9 GitHub API tools via the Model Context Protocol |
-| **Multi-Model AI Pipeline** | Gemini Flash Lite (extraction/classification) + Gemini 2.5 Flash (reasoning/curation) |
-| **Knowledge Graph & RAG** | Neo4j/NetworkX graph + embedding search → graph-grounded answer generation |
-| **Prompt Injection Prevention** | 5-layer defense: sanitizer → classifier → canary tokens → output guardrails → audit |
-| **Chain of Thought** | Explicit CoT in curation agents and RAG answers with reasoning traces |
+ClawGraph automatically crawls open-source repositories, extracts entities and relationships into a knowledge graph, and serves grounded answers via RAG — all secured with a 5-layer prompt injection defense.
 
 ## 🏗️ Architecture
 
@@ -47,8 +36,8 @@ Telegram Bot ◀── [OpenClaw Skill] ◀── [RAG Engine] ◀── [Graph 
 ### Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/knowledgeforge.git
-cd knowledgeforge
+git clone https://github.com/YOUR_USERNAME/ClawGraph.git
+cd ClawGraph
 pip install -e ".[dev]"
 cp .env.example .env
 # Edit .env with your API keys
@@ -63,7 +52,7 @@ python -m pytest tests/ -v
 ### Start the Server
 
 ```bash
-python -m knowledgeforge.main
+python -m ClawGraph.main
 # API available at http://localhost:8000
 ```
 
@@ -90,7 +79,7 @@ docker compose up -d
 ## 📁 Project Structure
 
 ```
-knowledgeforge/
+ClawGraph/
 ├── github_mcp_server/    # Custom Python MCP Server (9 GitHub tools)
 ├── pipeline/             # Orchestration Pipeline (5 stages + scheduler)
 │   └── stages/           # crawl, extract, embed, graph_update, curate
@@ -130,7 +119,7 @@ Custom Python MCP server with 9 tools:
 | `get_commit_history` | Recent commits with messages |
 | `get_contributors` | Contributors with commit counts |
 
-Run standalone: `python -m knowledgeforge.github_mcp_server.server`
+Run standalone: `python -m ClawGraph.github_mcp_server.server`
 
 ## 📊 API Endpoints
 
