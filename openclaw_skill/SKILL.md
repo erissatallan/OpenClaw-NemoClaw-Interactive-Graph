@@ -1,11 +1,6 @@
 ---
 name: ClawGraph
 description: Query the OpenClaw/NemoClaw knowledge graph, trigger pipeline runs, and view security reports.
-config:
-  ClawGraph_URL:
-    type: string
-    description: URL of the ClawGraph API
-    default: "http://localhost:8000"
 ---
 
 # ClawGraph Skill
@@ -13,35 +8,62 @@ config:
 ClawGraph is an AI-powered knowledge graph built from the OpenClaw and NemoClaw open-source ecosystems.
 It provides graph-grounded RAG answers about the codebase, architecture, and community.
 
-## Commands
+## Available Tools
 
-### `/kg query <question>`
-Ask a question about OpenClaw or NemoClaw. The answer is grounded in the knowledge graph with source citations.
+You have access to a shell script at `./scripts/kg.sh` that communicates with the ClawGraph API running at `http://localhost:8000`.
 
-**Examples:**
-- `/kg query What is the Gateway in OpenClaw?`
-- `/kg query How does NemoClaw sandbox agent execution?`
-- `/kg query What channels does OpenClaw support?`
+### Querying the Knowledge Graph
 
-### `/kg status`
-Show knowledge graph statistics: node counts, relationship counts, last crawl time.
+When users ask questions about OpenClaw or NemoClaw (code, architecture, features, etc.), run:
 
-### `/kg crawl`
-Trigger a manual pipeline run to refresh the knowledge graph from GitHub.
+```bash
+bash ./scripts/kg.sh query "their question here"
+```
 
-### `/kg security-report`
-Show recent prompt injection attempts detected by the security pipeline.
+The response is JSON with an `answer` field and a `sources` array. Format the answer nicely for the user and include source citations.
 
-## How It Works
-1. A **pipeline** crawls OpenClaw/NemoClaw repos from GitHub
-2. **Gemini Flash Lite** extracts entities and relationships into a **knowledge graph**
-3. When you ask a question, the **RAG engine** searches the graph + code embeddings
-4. **Gemini 2.5 Flash** generates a grounded answer with chain-of-thought reasoning
-5. All queries pass through a **5-layer prompt injection defense**
+### Checking Graph Status
 
-## Setup
-The ClawGraph service must be running (default: `http://localhost:8000`).
-Set `ClawGraph_URL` in your OpenClaw config to point to the service.
+To show knowledge graph statistics (total nodes, relationships, last crawl time):
 
-## Environment Variables
-- `ClawGraph_URL` — URL of the ClawGraph API (default: `http://localhost:8000`)
+```bash
+bash ./scripts/kg.sh status
+```
+
+### Triggering a Crawl
+
+To refresh the knowledge graph by crawling the latest code from GitHub:
+
+```bash
+bash ./scripts/kg.sh crawl
+```
+
+### Security Report
+
+To show recent prompt injection attempts detected by the security pipeline:
+
+```bash
+bash ./scripts/kg.sh security-report
+```
+
+### Health Check
+
+To verify the ClawGraph service is running:
+
+```bash
+bash ./scripts/kg.sh health
+```
+
+## When to Use This Skill
+
+- When users ask about OpenClaw or NemoClaw source code, architecture, or features
+- When users want to search the codebase
+- When users use the `/kg` prefix (e.g., `/kg query ...`, `/kg status`, `/kg crawl`)
+- When users ask you to update or refresh the knowledge graph
+- When users ask about security events or injection attempts
+
+## Important Notes
+
+- The ClawGraph service must be running at `http://localhost:8000`
+- Queries go through a 5-layer prompt injection defense pipeline
+- Answers include chain-of-thought reasoning and source code citations
