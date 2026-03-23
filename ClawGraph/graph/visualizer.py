@@ -118,7 +118,14 @@ def generate_graph_image(
     Returns:
         Absolute path to the generated PNG file.
     """
-    import matplotlib
+    try:
+        import matplotlib
+    except ImportError:
+        import subprocess
+        import sys
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "matplotlib", "-q"])
+        import matplotlib
+
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt  # noqa: E402
     import matplotlib.patches as mpatches  # noqa: E402
