@@ -52,3 +52,14 @@ class TestSecurityAuditEndpoint:
         assert response.status_code == 200
         data = response.json()
         assert "events" in data
+
+
+class TestVisualizeEndpoint:
+    def test_visualize_returns_png(self, client):
+        response = client.get("/api/graph/visualize")
+        assert response.status_code == 200
+        assert response.headers["content-type"] == "image/png"
+        
+        # Verify it's a valid PNG (starts with PNG signature bytes)
+        content = response.read()
+        assert content.startswith(b"\x89PNG\r\n\x1a\n")

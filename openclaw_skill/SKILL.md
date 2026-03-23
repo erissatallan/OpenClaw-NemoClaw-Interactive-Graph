@@ -30,6 +30,15 @@ To show knowledge graph statistics (total nodes, relationships, last crawl time)
 bash ./scripts/kg.sh status
 ```
 
+### Visualizing the Knowledge Graph
+
+To generate a graphical PNG layout of all the components and relationships in the knowledge graph:
+
+```bash
+bash ./scripts/kg.sh visualize
+```
+Wait for the command to finish and it will return the file path of the saved PNG snapshot. You can then provide the file path to the user or send the image.
+
 ### Triggering a Crawl
 
 To refresh the knowledge graph by crawling the latest code from GitHub:

@@ -28,6 +28,11 @@ case "$1" in
   health)
     curl -s "$CLAWGRAPH_URL/api/health"
     ;;
+  visualize)
+    OUT_FILE="/tmp/clawgraph_snapshot_$(date +%s).png"
+    curl -s -o "$OUT_FILE" "$CLAWGRAPH_URL/api/graph/visualize"
+    echo "Snapshot saved to $OUT_FILE"
+    ;;
   *)
     echo "Usage: kg.sh {query|status|crawl|security-report|health} [args...]"
     exit 1

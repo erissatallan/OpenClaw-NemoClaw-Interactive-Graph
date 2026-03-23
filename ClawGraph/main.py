@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -10,8 +11,9 @@ import structlog
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from pathlib import Path
+from starlette.background import BackgroundTask
 
 from ClawGraph.config import Settings, get_settings
 from ClawGraph.graph.base import GraphClient
@@ -241,6 +243,35 @@ async def graph_export():
         all_nodes = await graph.query("*")
         return {"nodes": all_nodes, "edges": []}
 
+
+@app.get("/api/graph/visualize")
+async def graph_visualize():
+    """Generate a PNG visualization of the knowledge graph."""
+    # Build a dictionary to access the logic within graph_export easily
+    # Since graph_export returns the exact schema the visualizer needs
+    export_data = await graph_export()
+    
+    # We defer the import so that matplotlib isn't loaded unless needed
+    from ClawGraph.graph.visualizer import generate_graph_image
+    
+    png_path = generate_graph_image(
+        nodes=export_data["nodes"],
+        edges=export_data["edges"]
+    )
+    
+    # Schedule cleanup to delete the temp file after the response is sent
+    def remove_file(path: str):
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+            
+    return FileResponse(
+        path=png_path,
+        media_type="image/png",
+        filename="knowledge_graph.png",
+        background=BackgroundTask(remove_file, png_path)
+    )
 
 @app.get("/viz", response_class=HTMLResponse)
 async def visualization():

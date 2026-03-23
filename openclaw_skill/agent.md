@@ -18,6 +18,11 @@ bash /root/.openclaw/workspace/ClawGraph/scripts/kg.sh query "their question"
 bash /root/.openclaw/workspace/ClawGraph/scripts/kg.sh status
 ```
 
+**Visualize the knowledge graph** — generate a PNG snapshot of the graph:
+```bash
+bash /root/.openclaw/workspace/ClawGraph/scripts/kg.sh visualize
+```
+
 **Trigger a crawl** — refresh data from GitHub:
 ```bash
 bash /root/.openclaw/workspace/ClawGraph/scripts/kg.sh crawl

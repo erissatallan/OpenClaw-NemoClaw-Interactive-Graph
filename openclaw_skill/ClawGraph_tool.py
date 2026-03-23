@@ -59,6 +59,20 @@ class ClawGraphTool:
 
         return "\n".join(lines)
 
+    async def visualize(self) -> str:
+        """Generate a PNG visualization of the knowledge graph."""
+        import time
+        output_path = f"/tmp/clawgraph_snapshot_{int(time.time())}.png"
+        
+        # We use a streaming request to download the large image file
+        async with self._client.stream("GET", "/api/graph/visualize") as resp:
+            resp.raise_for_status()
+            with open(output_path, "wb") as f:
+                async for chunk in resp.aiter_bytes():
+                    f.write(chunk)
+                    
+        return f"🖼️ Snapshot saved to {output_path}"
+
     async def crawl(self) -> str:
         """Trigger a pipeline run."""
         resp = await self._client.post("/api/pipeline/run")
