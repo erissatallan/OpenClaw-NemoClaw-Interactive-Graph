@@ -62,7 +62,10 @@ class ClawGraphTool:
     async def visualize(self) -> str:
         """Generate a PNG visualization of the knowledge graph."""
         import time
-        output_path = f"/tmp/clawgraph_snapshot_{int(time.time())}.png"
+        import os
+        media_dir = os.path.join(os.getcwd(), "media")
+        os.makedirs(media_dir, exist_ok=True)
+        output_path = os.path.join(media_dir, f"clawgraph_snapshot_{int(time.time())}.png")
         
         # We use a streaming request to download the large image file
         async with self._client.stream("GET", "/api/graph/visualize") as resp:

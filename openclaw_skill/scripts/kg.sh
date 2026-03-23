@@ -29,7 +29,9 @@ case "$1" in
     curl -s "$CLAWGRAPH_URL/api/health"
     ;;
   visualize)
-    OUT_FILE="/tmp/clawgraph_snapshot_$(date +%s).png"
+    MEDIA_DIR="$(pwd)/media"
+    mkdir -p "$MEDIA_DIR"
+    OUT_FILE="$MEDIA_DIR/clawgraph_snapshot_$(date +%s).png"
     curl -s -o "$OUT_FILE" "$CLAWGRAPH_URL/api/graph/visualize"
     echo "Snapshot saved to $OUT_FILE"
     ;;
