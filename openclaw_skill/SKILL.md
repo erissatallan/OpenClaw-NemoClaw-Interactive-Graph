@@ -39,6 +39,12 @@ bash ./scripts/kg.sh visualize
 ```
 Wait for the command to finish and it will return the file path of the saved PNG snapshot. You can then provide the file path to the user or send the image.
 
+### Daily Ecosystem Summary
+```bash
+/kg summary
+```
+**Output**: An AI-synthesized newsletter summarizing all the new modules, structural changes, issues, and pull requests over the last 24 hours across the ecosystems.
+
 ### Triggering a Crawl
 
 To refresh the knowledge graph by crawling the latest code from GitHub:

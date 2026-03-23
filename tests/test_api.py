@@ -63,3 +63,15 @@ class TestVisualizeEndpoint:
         # Verify it's a valid PNG (starts with PNG signature bytes)
         content = response.read()
         assert content.startswith(b"\x89PNG\r\n\x1a\n")
+
+
+class TestSummaryEndpoint:
+    def test_summary_returns_markdown(self, client, monkeypatch):
+        async def mock_summary(*args, **kwargs):
+            return "# Mocked Daily ecosystem summary"
+
+        monkeypatch.setattr("ClawGraph.graph.analytics.generate_daily_summary", mock_summary)
+
+        response = client.get("/api/graph/summary")
+        assert response.status_code == 200
+        assert "Mocked Daily ecosystem summary" in response.text

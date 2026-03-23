@@ -42,9 +42,12 @@ bash /root/.openclaw/workspace/ClawGraph/scripts/kg.sh health
 
 - When users ask about OpenClaw or NemoClaw code, architecture, or features
 - When users use `/kg` commands (e.g., `/kg query ...`, `/kg status`, `/kg crawl`)
-- When users ask to search the codebase or refresh the knowledge graph
-- When users ask about security events
+- **If the user asks "show me the graph", "visualize the codebase structure", or similar**:
+  `Execute /kg visualize to generate a force-directed relational map as a PNG.`
 
-### Response Format
+- **If the user asks for a daily update, newsletter, or what happened recently**:
+  `Execute /kg summary to generate an AI-synthesized daily ecosystem update markdown document covering recent PRs and architectural changes.`
+
+## General Response Format
 
 When returning query results, format them nicely with the answer and source citations. If the service is down, let the user know and suggest running the health check.

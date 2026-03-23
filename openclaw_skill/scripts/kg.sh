@@ -35,6 +35,9 @@ case "$1" in
     curl -s -o "$OUT_FILE" "$CLAWGRAPH_URL/api/graph/visualize"
     echo "Snapshot saved to $OUT_FILE"
     ;;
+  summary)
+    curl -s "$CLAWGRAPH_URL/api/graph/summary"
+    ;;
   *)
     echo "Usage: kg.sh {query|status|crawl|security-report|health} [args...]"
     exit 1

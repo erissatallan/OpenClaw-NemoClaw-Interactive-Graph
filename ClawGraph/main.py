@@ -244,6 +244,13 @@ async def graph_export():
         return {"nodes": all_nodes, "edges": []}
 
 
+@app.get("/api/graph/summary")
+async def graph_summary():
+    """Generate an AI-driven daily ecosystem breakdown."""
+    from ClawGraph.graph.analytics import generate_daily_summary
+    return await generate_daily_summary(state.graph, state.settings)
+
+
 @app.get("/api/graph/visualize")
 async def graph_visualize():
     """Generate a PNG visualization of the knowledge graph."""

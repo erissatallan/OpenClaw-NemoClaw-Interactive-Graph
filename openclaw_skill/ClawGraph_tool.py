@@ -37,6 +37,16 @@ class ClawGraphTool:
 
         return result
 
+    async def summary(self) -> str:
+        """Generate an AI-synthesized daily ecosystem newsletter."""
+        resp = await self._client.get("/api/graph/summary")
+        resp.raise_for_status()
+        # the endpoint returns a raw string or JSON depending on FastAPI. Let's assume it returns a string wrapped in JSON.
+        data = resp.json()
+        if isinstance(data, str):
+            return data
+        return str(data)
+        
     async def status(self) -> str:
         """Get knowledge graph statistics."""
         resp = await self._client.get("/api/graph/stats")
